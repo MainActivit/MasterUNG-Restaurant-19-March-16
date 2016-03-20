@@ -47,12 +47,23 @@ public class MyManage {
                     new String[] {String.valueOf(strUser)},
                     null, null, null, null);
 
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    resultStrings = new String[cursor.getColumnCount()];
+                    for (int i = 0; i < 4; i++) {
+                        resultStrings[i] = cursor.getString(i);
+                    }
+                }
+            }   // if
+            cursor.close();
+            return resultStrings;
+
 
         } catch (Exception e) {
             return null;
         }
 
-        return new String[0];
+       // return new String[0];
     }
 
 
