@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +13,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.ArrayList;
 
 public class OrderActivity extends AppCompatActivity {
 
@@ -135,7 +146,32 @@ public class OrderActivity extends AppCompatActivity {
 
     private void updateToServer() {
 
-    }
+        StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy
+                .Builder().permitAll().build();
+        StrictMode.setThreadPolicy(threadPolicy);
+
+        try {
+
+            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("isAdd", "true"));
+            nameValuePairs.add(new BasicNameValuePair("Officer", officerString));
+            nameValuePairs.add(new BasicNameValuePair("Desk", deskString));
+            nameValuePairs.add(new BasicNameValuePair("Food", foodString));
+            nameValuePairs.add(new BasicNameValuePair("Amount", amountString));
+
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost("http://swiftcodingthai.com/19Mar/php_add_order.php");
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+            httpClient.execute(httpPost);
+
+            Toast.makeText(OrderActivity.this,
+                    "Order " + foodString + " เรียบร้อยแล้ว", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(OrderActivity.this,
+                    "ไม่สามารถเชื่อมต่อ Server ได้", Toast.LENGTH_SHORT).show();
+        }
+
+    }   // updateToServer
 
     private void createDeskSpinner() {
 
