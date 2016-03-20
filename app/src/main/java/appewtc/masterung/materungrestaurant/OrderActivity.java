@@ -1,5 +1,7 @@
 package appewtc.masterung.materungrestaurant;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
@@ -50,7 +52,7 @@ public class OrderActivity extends AppCompatActivity {
         int intCount = cursor.getCount();
 
         String[] iconStrings = new String[intCount];
-        String[] foodStrings = new String[intCount];
+        final String[] foodStrings = new String[intCount];
         String[] priceStrings = new String[intCount];
 
         for (int i = 0; i < intCount; i++) {
@@ -67,9 +69,73 @@ public class OrderActivity extends AppCompatActivity {
                 foodStrings, priceStrings);
         foodListView.setAdapter(foodAdapter);
 
+        foodListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                foodString = foodStrings[i];
+
+                chooseAmount();
+
+            }   // onItemClick
+        });
 
 
     }   //FoodListView
+
+    private void chooseAmount() {
+
+        CharSequence[] charSequences = {"1 จาน", "2 จาน", "3 จาน", "4 จาน", "5 จาน"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(foodString);
+        builder.setSingleChoiceItems(charSequences, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                amountString = Integer.toString(i + 1);
+
+                dialogInterface.dismiss();
+
+                confirmOrder();
+
+
+            }   // onClick
+        });
+        builder.show();
+
+    }   // chooseAmount
+
+    private void confirmOrder() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.icon_myaccount);
+        builder.setTitle("โปรดตรวจทาน");
+        builder.setMessage("Officer = " + officerString + "\n" +
+                "Desk = " + deskString + "\n" +
+                "Food = " + foodString + "\n" +
+                "Amount = " + amountString);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                updateToServer();
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
+
+
+    }   // confirmOrder
+
+    private void updateToServer() {
+
+    }
 
     private void createDeskSpinner() {
 
