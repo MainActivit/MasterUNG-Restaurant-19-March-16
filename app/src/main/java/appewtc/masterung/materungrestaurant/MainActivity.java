@@ -1,5 +1,6 @@
 package appewtc.masterung.materungrestaurant;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -74,6 +75,21 @@ public class MainActivity extends AppCompatActivity {
         try {
 
             String[] myResultStrings = myManage.searchUser(userString);
+
+            //Check Password
+            if (passwordString.equals(myResultStrings[2])) {
+                //Password True
+                Intent intent = new Intent(MainActivity.this, OrderActivity.class);
+                intent.putExtra("Officer", myResultStrings[3]);
+                startActivity(intent);
+                finish();
+
+
+            } else {
+                //Password False
+                myAlert("Password ผิิด");
+
+            }
 
 
             myAlert("ยินดีต้อนรับ " + myResultStrings[3]);
