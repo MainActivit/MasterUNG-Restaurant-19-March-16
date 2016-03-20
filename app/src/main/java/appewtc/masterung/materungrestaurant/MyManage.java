@@ -43,7 +43,9 @@ public class MyManage {
             String[] resultStrings = null;
             Cursor cursor = readSqLiteDatabase.query(user_table,
                     new String[]{column_id, column_User, column_Password, column_Name},
-                    );
+                    column_User + "=?",
+                    new String[] {String.valueOf(strUser)},
+                    null, null, null, null);
 
 
         } catch (Exception e) {
